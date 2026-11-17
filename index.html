@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STAMP 听力练习</title>
+<style>
+:root{
+  --bg:#f7f7f8; --card:#fff; --ink:#1f2a37; --muted:#5b6b7c; --line:#e3e6ea;
+  --red:#b0362f; --red-2:#8f2a24; --red-soft:#fbeceb; --green:#2e7d4f; --green-soft:#e6f4ec; --amber:#a86400; --amber-soft:#fff4e0;
+  --r:14px; --sh:0 1px 2px rgba(16,24,40,.06),0 2px 8px rgba(16,24,40,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:-apple-system,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:10px 16px;font-weight:650;background:var(--card);color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.45;cursor:default}
+button.pri{background:var(--red);border-color:var(--red);color:#fff}
+button.pri:not(:disabled):hover{background:var(--red-2)}
+button.ok{background:var(--green);border-color:var(--green);color:#fff}
+button.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #f0b4ae;outline-offset:2px}
+input{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;width:100%;background:#fff;color:var(--ink)}
+.hide{display:none!important}
+header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.brand{font-weight:800;font-size:18px;color:var(--red);white-space:nowrap;cursor:pointer}
+.brand small{font-weight:600;color:var(--muted);font-size:13px;margin-left:6px}
+.bar .sp{flex:1}
+.pill{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--red-soft);color:var(--red);white-space:nowrap}
+main{max-width:1180px;margin:0 auto;padding:18px 16px 60px}
+h1{font-size:24px;margin:4px 0 4px}
+h2{font-size:17px;margin:22px 0 10px}
+.sub{color:var(--muted);margin:0 0 14px}
+.note{background:var(--amber-soft);color:#6b4300;border-radius:var(--r);padding:12px 14px;margin:0 0 16px;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.tc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--sh);text-align:left;display:flex;flex-direction:column;gap:6px;min-height:118px;font-weight:400}
+.tc:not(:disabled):hover{border-color:#d9a6a2}
+.tc .num{font-size:13px;font-weight:800;color:var(--red)}
+.tc .zh{font-size:22px;font-weight:800;line-height:1.15}
+.tc .en{font-size:14px;color:var(--muted)}
+.tc .st{margin-top:auto;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.tc.soon{background:transparent;box-shadow:none;border-style:dashed}
+.tc.soon .zh,.tc.soon .num{color:#9aa5b1}
+.dots{display:flex;gap:4px}
+.dots i{width:9px;height:9px;border-radius:50%;background:#d7dbe0;display:block}
+.dots i.on{background:var(--green)}
+.lv{display:flex;flex-wrap:wrap;gap:8px}
+.lv button{min-width:72px}
+.lv b{display:block;font-size:17px}
+.lv span{font-size:12px;color:var(--muted);font-weight:500}
+.meter-row{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+.prog{flex:1;height:10px;background:#e7eaee;border-radius:6px;overflow:hidden;max-width:420px}
+.prog i{display:block;height:100%;background:var(--green);width:0}
+/* question view */
+.qtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.qtop .t{font-weight:800;font-size:19px}
+.qtop .lvtag{font-size:13px;font-weight:800;background:var(--ink);color:#fff;border-radius:6px;padding:2px 8px}
+.qtop .pos{color:var(--muted);font-size:14px}
+.qwrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.slide{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);aspect-ratio:16/9}
+.slide img{display:block;width:100%;height:100%;object-fit:contain}
+.slide .mk{position:absolute;background:#fff}
+.slide .hint{position:absolute;left:3%;top:6%;width:26%;color:var(--muted);font-size:clamp(12px,1.6vw,17px)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.panel h3{margin:0 0 10px;font-size:15px;color:var(--muted);font-weight:700}
+.play{width:100%;padding:16px;font-size:20px;border-radius:12px}
+.big{font-size:18px;padding:14px 18px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>button{flex:1}
+.status{font-size:14px;color:var(--muted);margin:10px 0 0}
+.status.good{color:var(--green);font-weight:650}
+.status.bad{color:#b42318;font-weight:650}
+.script{font-size:19px;line-height:1.7;white-space:pre-wrap;max-height:300px;overflow:auto;padding:12px;border-radius:10px;background:#f4f5f7;margin:0 0 12px}
+.rec-now{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.timer{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.vu{flex:1;height:10px;background:#eceff2;border-radius:6px;overflow:hidden}
+.vu i{display:block;height:100%;width:0;background:var(--red)}
+.recdot{width:12px;height:12px;border-radius:50%;background:var(--red);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.25}}
+audio{width:100%;margin:6px 0}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;border-radius:999px;padding:4px 10px}
+.badge.g{background:var(--green-soft);color:var(--green)}
+.badge.n{background:#eef0f3;color:var(--muted)}
+.nav{display:flex;gap:8px;margin-top:12px}
+.nav button{flex:1}
+label.chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin-top:12px;cursor:pointer}
+label.chk input{width:auto}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal .box{background:#fff;border-radius:16px;max-width:420px;width:100%;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.modal .box h2{margin:0 0 6px}
+.modal .box p{margin:0 0 14px;color:var(--muted);font-size:15px}
+.field{margin:0 0 12px}
+.field span{display:block;font-size:13px;font-weight:700;margin-bottom:4px}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 16px 30px}
+footer a{color:var(--muted)}
+.kbd{font-size:12px;color:var(--muted);margin-top:10px}
+@media (max-width:860px){
+  .qwrap{grid-template-columns:1fr}
+  .script{max-height:none}
+}
+@media (max-width:480px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .tc{min-height:104px;padding:12px}
+  .tc .zh{font-size:19px}
+  .brand small{display:none}
+}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div class="brand" id="home">STAMP 听力练习<small>Listening Practice</small></div>
+  <div class="sp"></div>
+  <span class="pill hide" id="who"></span>
+</div></header>
+
+<main id="app"></main>
+<footer id="foot"></footer>
+
+<div class="modal hide" id="login"><div class="box">
+  <h2>老师录音 Teacher recording</h2>
+  <p>录音会保存到学校的 Google Drive。<br>Recordings are saved to the shared Google Drive folder.</p>
+  <div class="field"><span>你的名字 Your name</span><input id="lgName" placeholder="例如 Wang 老师" autocomplete="name"></div>
+  <div class="field"><span>录音密码 Password</span><input id="lgKey" type="password" autocomplete="current-password"></div>
+  <div class="row"><button class="ghost" id="lgCancel">学生模式 Student</button><button class="pri" id="lgGo">进入 Enter</button></div>
+  <p class="status" id="lgMsg"></p>
+</div></div>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script>
+(function(){
+"use strict";
+var CFG = window.STAMP_CONFIG || {}, DATA = window.STAMP_DATA || {topics:[],questions:[]};
+var URL_ = String(CFG.SCRIPT_URL || "").trim();
+var MAXS = Math.min(Number(CFG.MAX_SECONDS) || 240, 600);
+var LEVELS = [["NM","Novice Mid"],["NH","Novice High"],["IL","Intermediate Low"],["IM","Intermediate Mid"],["IH","Intermediate High"]];
+var TEACHER = /[?&]teacher\b/.test(location.search);
+var $ = function(id){ return document.getElementById(id); };
+var app = $("app");
+var recs = {}, recsLoaded = false, audioCache = {};
+var me = {name:"", key:""};
+function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function topicOf(code){ for(var i=0;i<DATA.topics.length;i++) if(DATA.topics[i].code === code) return DATA.topics[i]; return null; }
+function qById(id){ for(var i=0;i<DATA.questions.length;i++) if(DATA.questions[i].id === id) return DATA.questions[i]; return null; }
+function qsOf(code){ return DATA.questions.filter(function(q){ return q.topic === code; }); }
+function qsLv(lv){ return DATA.questions.filter(function(q){ return q.level === lv; }); }
+function short(code){ return code.replace(/^Q0/, "Q"); }
+function fmt(s){ s = Math.max(0, Math.round(s)); return Math.floor(s/60) + ":" + ("0" + (s%60)).slice(-2); }
+function when(iso){ try{ var d = new Date(iso); return (d.getMonth()+1) + "/" + d.getDate(); }catch(e){ return ""; } }
+
+/* ---------- backend ---------- */
+function api(method, params){
+  if(!URL_) return Promise.reject(new Error("还没有设置 SCRIPT_URL"));
+  if(method === "GET"){
+    var q = Object.keys(params).map(function(k){ return k + "=" + encodeURIComponent(params[k]); }).join("&");
+    return fetch(URL_ + (URL_.indexOf("?") < 0 ? "?" : "&") + q).then(function(r){ return r.json(); });
+  }
+  return fetch(URL_, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(params)}).then(function(r){ return r.json(); });
+}
+function loadRecs(){
+  if(!URL_) return Promise.resolve();
+  return api("GET", {action:"list", t:Date.now()}).then(function(j){ if(j && j.ok){ recs = j.recs || {}; recsLoaded = true; } }).catch(function(){});
+}
+function getAudio(id){
+  var r = recs[id]; if(!r) return Promise.resolve(null);
+  var k = id + "|" + r.u;
+  if(audioCache[k]) return Promise.resolve(audioCache[k]);
+  return api("GET", {action:"audio", id:id, u:r.u}).then(function(j){
+    if(!j || !j.ok || !j.b64) return null;
+    var bin = atob(j.b64), a = new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) a[i] = bin.charCodeAt(i);
+    audioCache[k] = URL.createObjectURL(new Blob([a], {type:j.mime || "audio/mp4"}));
+    return audioCache[k];
+  });
+}
+
+/* ---------- routing ---------- */
+function go(h){ if(location.hash === h) route(); else location.hash = h; }
+window.addEventListener("hashchange", route);
+$("home").onclick = function(){ go("#"); };
+
+function route(){
+  stopAll();
+  var h = location.hash.replace(/^#/, ""), p = {};
+  h.split("&").forEach(function(kv){ var i = kv.indexOf("="); if(i > 0) p[kv.slice(0,i)] = decodeURIComponent(kv.slice(i+1)); });
+  if(p.q && qById(p.q)) return showQ(p.q, p.lv || "");
+  if(p.t && topicOf(p.t) && qsOf(p.t).length) return showQ(qsOf(p.t)[0].id, "");
+  if(p.lv && qsLv(p.lv).length) return showQ(qsLv(p.lv)[0].id, p.lv);
+  showHome();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- home ---------- */
+function showHome(){
+  var total = DATA.questions.length, done = DATA.questions.filter(function(q){ return recs[q.id]; }).length;
+  var h = "";
+  if(!URL_) h += '<div class="note">网站还没有连接录音后台（config.js 里的 SCRIPT_URL 是空的）。现在只能看题目，不能听和录音。<br>Not connected to the recording backend yet — set SCRIPT_URL in config.js.</div>';
+  if(TEACHER){
+    h += '<h1>老师录音 · Record the listening questions</h1><p class="sub">选一个话题，一题一题录音。绿色的点 = 已经有录音。</p>';
+    h += '<div class="meter-row"><div class="prog"><i style="width:' + (total ? done/total*100 : 0) + '%"></i></div><b>' + done + ' / ' + total + '</b><span class="sub" style="margin:0">已录 recorded</span></div>';
+    var next = DATA.questions.filter(function(q){ return !recs[q.id]; })[0];
+    if(next && recsLoaded) h += '<p><button class="pri" data-go="#q=' + next.id + '">▶ 去下一个还没录的题 Next unrecorded (' + esc(next.id) + ')</button></p>';
+  } else {
+    h += '<h1>STAMP 中文听力练习</h1><p class="sub">先听老师的录音，再看图选答案。Listen first, then look at the question.</p>';
+  }
+  h += '<h2>按话题 By topic</h2><div class="grid">';
+  DATA.topics.forEach(function(t){
+    var qs = qsOf(t.code), n = qs.filter(function(q){ return recs[q.id]; }).length;
+    if(!t.ready || !qs.length){
+      h += '<button class="tc soon" disabled><span class="num">' + short(t.code) + '</span><span class="zh">' + esc(t.zh) + '</span><span class="en">' + esc(t.en) + '</span><span class="st">即将加入 Coming soon</span></button>';
+      return;
+    }
+    var st = TEACHER
+      ? '<span class="dots">' + qs.map(function(q){ return '<i class="' + (recs[q.id] ? "on" : "") + '"></i>'; }).join("") + '</span>' + n + '/' + qs.length
+      : qs.length + ' 题' + (URL_ && recsLoaded ? ' · ' + (n === qs.length ? "🎧 全部有录音" : n ? "🎧 " + n + " 题有录音" : "录音准备中") : "");
+    h += '<button class="tc" data-go="#t=' + t.code + '"><span class="num">' + short(t.code) + '</span><span class="zh">' + esc(t.zh) + '</span><span class="en">' + esc(t.en) + '</span><span class="st">' + st + '</span></button>';
+  });
+  h += '</div><h2>按等级 By level</h2><div class="lv">';
+  LEVELS.forEach(function(l){
+    var c = qsLv(l[0]).length;
+    h += '<button data-go="#lv=' + l[0] + '"' + (c ? "" : " disabled") + '><b>' + l[0] + '</b><span>' + l[1] + ' · ' + c + ' 题</span></button>';
+  });
+  h += '</div>';
+  app.innerHTML = h;
+  bindGo();
+}
+function bindGo(){ Array.prototype.forEach.call(app.querySelectorAll("[data-go]"), function(b){ b.onclick = function(){ go(b.getAttribute("data-go")); }; }); }
+
+/* ---------- question ---------- */
+var cur = null;
+function showQ(id, lv){
+  var q = qById(id), t = topicOf(q.topic);
+  var list = lv ? qsLv(lv) : qsOf(q.topic), i = list.indexOf(q);
+  var prev = list[i-1], next = list[i+1];
+  var link = function(x){ return x ? "#q=" + x.id + (lv ? "&lv=" + lv : "") : ""; };
+  cur = {q:q, t:t, prev:link(prev), next:link(next), reveal:TEACHER};
+  var h = '<div class="qtop"><button class="ghost" data-go="#">← 返回 Back</button>'
+    + '<span class="t">' + short(t.code) + ' ' + esc(t.zh) + ' <span style="color:var(--muted);font-weight:600">' + esc(t.en) + '</span></span>'
+    + (q.level ? '<span class="lvtag">' + q.level + '</span>' : '')
+    + '<span class="pos">' + (lv ? "等级 " + lv + " · " : "") + '第 ' + (i+1) + ' / ' + list.length + ' 题</span></div>';
+  h += '<div class="qwrap"><div><div class="slide" id="slide"><img src="slides/' + q.id + '.jpg" alt="' + esc(q.id) + '">';
+  if(!TEACHER){
+    (q.mask || []).forEach(function(m){ h += '<div class="mk" style="left:' + m[0]*100 + '%;top:' + m[1]*100 + '%;width:' + m[2]*100 + '%;height:' + m[3]*100 + '%"></div>'; });
+    h += '<div class="hint" id="hint">🎧 先听录音<br>Listen first</div>';
+  }
+  h += '</div><div class="nav"><button id="pv"' + (prev ? "" : " disabled") + '>← 上一题 Prev</button><button id="nx"' + (next ? "" : " disabled") + '>下一题 Next →</button></div></div>';
+  h += '<div class="panel" id="panel"></div></div>';
+  app.innerHTML = h;
+  bindGo();
+  $("pv").onclick = function(){ if(cur.prev) go(cur.prev); };
+  $("nx").onclick = function(){ if(cur.next) go(cur.next); };
+  if(TEACHER) teacherPanel(); else studentPanel();
+  window.scrollTo(0, 0);
+}
+
+/* student */
+function studentPanel(){
+  var q = cur.q, r = recs[q.id], P = $("panel");
+  var h = '<h3>听力 Listening</h3>';
+  if(!URL_ || (recsLoaded && !r)){
+    h += '<p class="status">这题还没有老师的录音。<br>No recording for this question yet.</p>';
+  } else {
+    h += '<button class="pri play" id="play">▶ 播放 Play</button><audio id="au" class="hide" preload="auto"></audio><p class="status" id="pst">听的次数 Times played: <b id="cnt">0</b></p>';
+  }
+  h += '<button class="big" id="rv" style="width:100%;margin-top:12px">👀 看题目和原文 Show the text</button>';
+  h += '<p class="kbd">听完以后，点“看题目和原文”检查自己听得对不对。<br>After listening, show the text to check yourself.</p>';
+  P.innerHTML = h;
+  $("rv").onclick = toggleReveal;
+  var pb = $("play");
+  if(!pb) return;
+  var au = $("au"), cnt = 0;
+  pb.onclick = function(){
+    if(!au.paused){ au.pause(); return; }
+    pb.disabled = true; pb.textContent = "加载中 Loading…";
+    getAudio(q.id).then(function(u){
+      pb.disabled = false;
+      if(!u){ pb.textContent = "▶ 播放 Play"; $("pst").textContent = "没有找到录音 Recording not found"; return; }
+      if(au.src !== u) au.src = u;
+      au.currentTime = 0; return au.play();
+    }).catch(function(){ pb.disabled = false; pb.textContent = "▶ 播放 Play"; $("pst").textContent = "网络有问题，请再试一次 Network problem, try again"; });
+  };
+  au.onplay = function(){ pb.textContent = "⏸ 暂停 Pause"; };
+  au.onpause = function(){ pb.textContent = "▶ 再听一次 Play again"; };
+  au.onended = function(){ cnt++; $("cnt").textContent = cnt; pb.textContent = "▶ 再听一次 Play again"; };
+}
+function toggleReveal(){
+  cur.reveal = !cur.reveal;
+  Array.prototype.forEach.call(document.querySelectorAll("#slide .mk, #hint"), function(e){ e.classList.toggle("hide", cur.reveal); });
+  $("rv").textContent = cur.reveal ? "🙈 遮住原文 Hide the text" : "👀 看题目和原文 Show the text";
+}
+
+/* teacher */
+var R = {mr:null, stream:null, chunks:[], blob:null, mime:"", secs:0, t0:0, tick:null, raf:0, ac:null, url:""};
+function teacherPanel(){
+  var q = cur.q, r = recs[q.id], P = $("panel");
+  var h = '<h3>朗读稿 Script</h3><div class="script">' + esc(q.text) + '</div>';
+  h += '<div id="have">' + (r
+      ? '<span class="badge g">✓ 已有录音 · ' + esc(r.t) + ' · ' + when(r.u) + ' · ' + fmt(r.s) + '</span><audio id="cur" controls preload="none"></audio>'
+      : '<span class="badge n">还没有录音 Not recorded yet</span>') + '</div>';
+  h += '<div id="idle" style="margin-top:12px"><button class="pri play" id="go">● ' + (r ? "重新录音 Record again" : "开始录音 Start recording") + '</button></div>';
+  h += '<div id="live" class="hide" style="margin-top:12px"><div class="rec-now"><span class="recdot"></span><span class="timer" id="tm">0:00</span><div class="vu"><i id="vu"></i></div></div><button class="pri play" id="stop">■ 停止 Stop</button></div>';
+  h += '<div id="after" class="hide" style="margin-top:12px"><h3>听一听 Listen back</h3><audio id="pre" controls></audio><div class="row" style="margin-top:8px"><button id="again">🔁 重录 Redo</button><button class="ok" id="save">✓ 保存 Save</button></div></div>';
+  h += '<p class="status" id="st"></p>';
+  h += '<label class="chk"><input type="checkbox" id="auto"' + (store("stampAutoNext") === "0" ? "" : " checked") + '> 保存后自动去下一题 Go to next question after saving</label>';
+  h += '<p class="kbd">键盘 Keyboard：空格 Space = 开始/停止 · Enter = 保存 · ← → = 上一题/下一题</p>';
+  P.innerHTML = h;
+  $("auto").onchange = function(){ store("stampAutoNext", this.checked ? "1" : "0"); };
+  $("go").onclick = startRec;
+  $("stop").onclick = stopRec;
+  $("again").onclick = function(){ resetRec(); startRec(); };
+  $("save").onclick = saveRec;
+  if(r){
+    var ca = $("cur");
+    ca.addEventListener("play", function onp(){
+      if(ca.getAttribute("data-ok")) return;
+      ca.pause(); say("加载中 Loading…");
+      getAudio(q.id).then(function(u){ say(""); if(u){ ca.src = u; ca.setAttribute("data-ok", "1"); ca.play(); } else say("没有找到录音", "bad"); });
+    });
+  }
+}
+function say(t, cls){ var s = $("st"); if(s){ s.textContent = t; s.className = "status" + (cls ? " " + cls : ""); } }
+function view(which){ ["idle","live","after"].forEach(function(k){ var e = $(k); if(e) e.classList.toggle("hide", k !== which); }); }
+function pickMime(){
+  var list = ["audio/mp4;codecs=mp4a.40.2", "audio/mp4", "audio/webm;codecs=opus", "audio/webm"];
+  for(var i=0;i<list.length;i++){ try{ if(window.MediaRecorder && MediaRecorder.isTypeSupported(list[i])) return list[i]; }catch(e){} }
+  return "";
+}
+function startRec(){
+  if(!navigator.mediaDevices || !window.MediaRecorder){ say("这个浏览器不能录音，请用 Chrome 或 Safari。This browser cannot record.", "bad"); return; }
+  say("");
+  navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true, autoGainControl:true}}).then(function(s){
+    R.stream = s; R.chunks = []; R.mime = pickMime();
+    var opt = R.mime ? {mimeType:R.mime, audioBitsPerSecond:96000} : {};
+    try{ R.mr = new MediaRecorder(s, opt); }catch(e){ R.mr = new MediaRecorder(s); }
+    R.mr.ondataavailable = function(e){ if(e.data && e.data.size) R.chunks.push(e.data); };
+    R.mr.onstop = function(){
+      clearInterval(R.tick); cancelAnimationFrame(R.raf);
+      try{ R.stream.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
+      try{ R.ac && R.ac.close(); }catch(e){}
+      R.secs = (Date.now() - R.t0) / 1000;
+      var type = (R.mr.mimeType || R.mime || "audio/webm");
+      R.blob = new Blob(R.chunks, {type:type}); R.mime = type;
+      if(R.url) URL.revokeObjectURL(R.url);
+      R.url = URL.createObjectURL(R.blob);
+      var pre = $("pre"); if(!pre) return;
+      pre.src = R.url; view("after");
+      say(R.secs < 1.5 ? "录音太短了，请重录。Too short — please redo." : "听一听，满意就点“保存”。Listen, then Save.", R.secs < 1.5 ? "bad" : "");
+      $("save").disabled = R.secs < 1.5;
+    };
+    try{
+      R.ac = new (window.AudioContext || window.webkitAudioContext)(); if(R.ac.resume) R.ac.resume();
+      var an = R.ac.createAnalyser(); an.fftSize = 512; R.ac.createMediaStreamSource(s).connect(an);
+      var buf = new Uint8Array(512);
+      R.loop = function loop(){ an.getByteTimeDomainData(buf); var m = 0; for(var i=0;i<buf.length;i++) m = Math.max(m, Math.abs(buf[i]-128)); var v = $("vu"); if(v) v.style.width = Math.min(100, m/64*100) + "%"; if(R.mr && R.mr.state === "recording") R.raf = requestAnimationFrame(loop); };
+    }catch(e){ R.loop = null; }
+    R.mr.start(1000); R.t0 = Date.now(); view("live"); if(R.loop) R.loop();
+    R.tick = setInterval(function(){ var t = (Date.now() - R.t0)/1000, e = $("tm"); if(e) e.textContent = fmt(t) + " / " + fmt(MAXS); if(t >= MAXS) stopRec(); }, 250);
+  }, function(e){
+    say("不能使用麦克风（" + e.name + "）。请在浏览器地址栏左边允许麦克风，然后再试。Microphone blocked — allow it in the browser and try again.", "bad");
+  });
+}
+function stopRec(){ if(R.mr && R.mr.state === "recording") R.mr.stop(); }
+function resetRec(){ R.blob = null; view("idle"); say(""); }
+function stopAll(){
+  try{ if(R.mr && R.mr.state === "recording"){ R.mr.onstop = null; R.mr.stop(); } }catch(e){}
+  try{ R.stream && R.stream.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
+  clearInterval(R.tick); cancelAnimationFrame(R.raf); R.mr = null; R.blob = null;
+}
+function saveRec(){
+  if(!R.blob) return;
+  var q = cur.q, t = cur.t, prevRec = recs[q.id];
+  if(prevRec && prevRec.t && prevRec.t !== me.name && !confirm("这题已经有 " + prevRec.t + " 的录音。要用你的新录音替换吗？（旧录音会保留在 Drive 的「旧录音 old」文件夹）\n" + prevRec.t + " already recorded this question. Replace it?")) return;
+  $("save").disabled = true; $("again").disabled = true; say("正在保存… Saving…");
+  var fr = new FileReader();
+  fr.onload = function(){
+    var b64 = String(fr.result).split(",")[1];
+    api("POST", {action:"save", key:me.key, teacher:me.name, id:q.id, topic:t.zh + " " + t.en, level:q.level, secs:Math.round(R.secs), mime:R.mime, b64:b64}).then(function(j){
+      if(!j || !j.ok) throw new Error(j && j.error || "error");
+      recs[q.id] = j.rec;
+      var k = q.id + "|" + j.rec.u; audioCache[k] = R.url; R.url = "";
+      R.blob = null;
+      say("✓ 保存好了 Saved!", "good");
+      var auto = $("auto") && $("auto").checked;
+      setTimeout(function(){ if(cur && cur.q === q){ if(auto && cur.next) go(cur.next); else teacherPanel(); } }, 700);
+    }).catch(function(e){
+      $("save").disabled = false; $("again").disabled = false;
+      say("没有保存成功：" + e.message + "。请再点一次“保存”。Not saved — tap Save again.", "bad");
+    });
+  };
+  fr.readAsDataURL(R.blob);
+}
+document.addEventListener("keydown", function(e){
+  if(!cur || !document.getElementById("slide") || /INPUT|TEXTAREA/.test(document.activeElement && document.activeElement.tagName)) return;
+  if(e.key === "ArrowLeft" && cur.prev && !(R.mr && R.mr.state === "recording")){ go(cur.prev); }
+  else if(e.key === "ArrowRight" && cur.next && !(R.mr && R.mr.state === "recording")){ go(cur.next); }
+  else if(TEACHER && e.code === "Space"){
+    e.preventDefault();
+    if(R.mr && R.mr.state === "recording") stopRec(); else if(!$("idle").classList.contains("hide")) startRec();
+  } else if(TEACHER && e.key === "Enter" && R.blob && !$("save").disabled){ e.preventDefault(); saveRec(); }
+});
+
+/* ---------- teacher login ---------- */
+function showLogin(){
+  $("login").classList.remove("hide");
+  $("lgName").value = store("stampTeacherName") || "";
+  setTimeout(function(){ ($("lgName").value ? $("lgKey") : $("lgName")).focus(); }, 50);
+}
+$("lgCancel").onclick = function(){ location.href = location.pathname; };
+$("lgGo").onclick = doLogin;
+$("lgKey").onkeydown = function(e){ if(e.key === "Enter") doLogin(); };
+function doLogin(){
+  var n = $("lgName").value.trim(), k = $("lgKey").value;
+  if(!n){ $("lgMsg").textContent = "请写你的名字 Please enter your name"; return; }
+  if(!URL_){ $("lgMsg").textContent = "还没有设置 SCRIPT_URL（config.js）"; return; }
+  $("lgGo").disabled = true; $("lgMsg").textContent = "检查中 Checking…";
+  api("POST", {action:"check", key:k}).then(function(j){
+    $("lgGo").disabled = false;
+    if(!j || !j.ok){ $("lgMsg").textContent = "密码不对 Wrong password"; return; }
+    me = {name:n, key:k}; store("stampTeacherName", n); store("stampTeacherKey", k);
+    $("login").classList.add("hide"); startTeacher();
+  }).catch(function(){ $("lgGo").disabled = false; $("lgMsg").textContent = "连不上录音后台，请检查网络或 SCRIPT_URL"; });
+}
+function startTeacher(){
+  $("who").textContent = "🎤 " + me.name; $("who").classList.remove("hide");
+  $("who").title = "点这里换老师 Click to switch teacher";
+  $("who").style.cursor = "pointer";
+  $("who").onclick = function(){ store("stampTeacherKey", ""); showLogin(); };
+  route();
+}
+
+/* ---------- start ---------- */
+$("foot").innerHTML = TEACHER
+  ? '<a href="' + location.pathname + '">学生练习页 Student page</a>'
+  : '<a href="?teacher">老师录音 Teacher recording</a>';
+app.innerHTML = '<p class="sub">加载中 Loading…</p>';
+loadRecs().then(function(){
+  if(TEACHER){
+    var n = store("stampTeacherName"), k = store("stampTeacherKey");
+    if(n && k){ me = {name:n, key:k}; startTeacher(); } else { route(); showLogin(); }
+  } else route();
+});
+})();
+</script>
+</body>
+</html>
